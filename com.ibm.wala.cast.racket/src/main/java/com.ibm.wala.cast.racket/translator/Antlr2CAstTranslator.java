@@ -1,5 +1,6 @@
 package com.ibm.wala.cast.racket.translator;
 import com.ibm.wala.cast.ir.translator.TranslatorToCAst;
+import com.ibm.wala.cast.racket.Antlr.BSLParser;
 import com.ibm.wala.cast.racket.types.RacketPrimitiveTypes;
 import com.ibm.wala.cast.tree.*;
 import com.ibm.wala.cast.tree.CAstSourcePositionMap.Position;
@@ -330,7 +331,7 @@ public class Antlr2CAstTranslator<T extends Position> implements TranslatorToCAs
         final List<CAstNode> stmts;
         stmts = new ArrayList<>(n.getChildCount()-1);
         for(int i=0; i < n.getChildCount()-1; i++) {
-            stmts.add(visitdefOrExpr((DefOrExprContext) n.getChild(i), child));
+            stmts.add(visitdefOrExpr((BSLParser.DefOrExprContext) n.getChild(i), child));
         }
         final CAstNode rast =
                 makeNode(
@@ -349,7 +350,7 @@ public class Antlr2CAstTranslator<T extends Position> implements TranslatorToCAs
         return new ReportEntity(n, subs, rast, map, pos, "dummy");
     }
 
-    public CAstNode visitdefOrExpr(DefOrExprContext n, WalkContext context)
+    public CAstNode visitdefOrExpr(BSLParser.DefOrExprContext n, WalkContext context)
     {
         CAstNode visitChild = visit(n.getChild(0), context);
         final CAstNode stmt = makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, visitChild);
@@ -362,14 +363,14 @@ public class Antlr2CAstTranslator<T extends Position> implements TranslatorToCAs
     private CAstNode visit(ParseTree n, WalkContext context) {
         if(n==null) {
             return makeNode(context, fFactory, null, CAstNode.EMPTY);
-        } else if (n instanceof DefinitionContext) {
-            return visit((DefinitionContext)n, context);
-        } else if (n instanceof ExprContext) {
-            return visit((ExprContext)n, context);
-        } else if (n instanceof TestCaseContext) {
-            return visit((TestCaseContext)n, context);
-        } else if (n instanceof LibraryRequireContext) {
-            return visit((LibraryRequireContext) n, context);
+        } else if (n instanceof BSLParser.DefinitionContext) {
+            return visit((BSLParser.DefinitionContext)n, context);
+        } else if (n instanceof BSLParser.ExprContext) {
+            return visit((BSLParser.ExprContext)n, context);
+        } else if (n instanceof BSLParser.TestCaseContext) {
+            return visit((BSLParser.TestCaseContext)n, context);
+        } else if (n instanceof BSLParser.LibraryRequireContext) {
+            return visit((BSLParser.LibraryRequireContext) n, context);
         }
 
         Assertions.UNREACHABLE("Unhandled node type " + n.getClass().getCanonicalName());
@@ -377,9 +378,9 @@ public class Antlr2CAstTranslator<T extends Position> implements TranslatorToCAs
         return null;
     }
 
-    private CAstNode visit(DefinitionContext n, WalkContext context) {return null;}
+    private CAstNode visit(BSLParser.DefinitionContext n, WalkContext context) {return null;}
 
-    public CAstType getType(DefinitionContext n)
+    public CAstType getType(BSLParser.DefinitionContext n)
     {
         if(n.expr().BOOLEAN() != null)
             return RacketPrimitiveTypes.lookupType("b");
@@ -393,13 +394,13 @@ public class Antlr2CAstTranslator<T extends Position> implements TranslatorToCAs
         }
     }
 
-    private CAstNode visit(ExprContext n, WalkContext context) {return null;}
+    private CAstNode visit(BSLParser.ExprContext n, WalkContext context) {return null;}
 
-    private CAstNode visit(TestCaseContext n, WalkContext context) {
+    private CAstNode visit(BSLParser.TestCaseContext n, WalkContext context) {
         return null;
     }
 
-    private CAstNode visit(LibraryRequireContext n, WalkContext context) {
+    private CAstNode visit(BSLParser.LibraryRequireContext n, WalkContext context) {
         return null;
     }
 
