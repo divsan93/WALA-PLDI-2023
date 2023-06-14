@@ -1,0 +1,34 @@
+plugins {
+    id 'gradle-mvn-push'
+    id 'wala-java'
+}
+apply plugin: 'antlr'
+
+eclipse.project.natures 'org.eclipse.pde.PluginNature'
+
+dependencies {
+    implementation ('org.apache.olingo:olingo-odata2-api:2.0.12')
+    implementation 'org.apache.olingo:olingo-odata2-api-annotation:2.0.12'
+    implementation 'org.apache.olingo:olingo-odata2-core:2.0.12'
+    testImplementation project(path: ':com.ibm.wala.cast.racket')
+
+    //implementation(files("antlr-4.5.3-complete.jar"))
+    antlr "org.antlr:antlr4:4.11.1"
+    implementation("org.antlr:antlr4-runtime:4.11.1")
+    implementation(
+            project(':com.ibm.wala.cast'),
+            project(':com.ibm.wala.core'),
+            project(':com.ibm.wala.util'),
+    )
+    testImplementation 'junit:junit:4.13.1'
+    testFixturesImplementation(
+            'junit:junit:4.13.2',
+            project(':com.ibm.wala.cast'),
+            project(':com.ibm.wala.core'),
+    )
+}
+
+repositories {
+    mavenCentral()
+}
+

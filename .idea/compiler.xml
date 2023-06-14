@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="com.ibm.wala.com.ibm.wala.ide_feature" />
+        <module name="com.ibm.wala.com.ibm.wala.ide.tests" />
+        <module name="com.ibm.wala.com.ibm.wala.ide.jdt" />
+        <module name="com.ibm.wala.com.ibm.wala.ide" />
+        <module name="e47" />
+        <module name="com.ibm.wala.com.ibm.wala-repository" />
+        <module name="com.ibm.wala.ide.jsdt" />
+        <module name="com.ibm.wala.ide.jsdt.tests" />
+        <module name="com.ibm.wala.com.ibm.wala.cast.java.test.data" />
+        <module name="com.ibm.wala.com.ibm.wala.ide.jdt.test" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="1.8">
+      <module name="com.ibm.wala-repository" target="18" />
+      <module name="com.ibm.wala.cast.java.test.data" target="18" />
+      <module name="com.ibm.wala.ide" target="18" />
+      <module name="com.ibm.wala.ide.jdt" target="18" />
+      <module name="com.ibm.wala.ide.jdt.test" target="18" />
+      <module name="com.ibm.wala.ide.tests" target="18" />
+      <module name="com.ibm.wala.ide_feature" target="18" />
+      <module name="WALA" target="18" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

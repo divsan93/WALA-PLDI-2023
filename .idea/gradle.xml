@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="delegatedBuild" value="true" />
+        <option name="testRunner" value="GRADLE" />
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleJvm" value="1.8" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/buildSrc" />
+            <option value="$PROJECT_DIR$/cast.racket.antlr" />
+            <option value="$PROJECT_DIR$/com.ibm.wala-repository" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.cast" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.cast.codegen" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.cast.codegen.python" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.cast.golang" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.cast.java" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.cast.java.ecj" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.cast.java.test.data" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.cast.js" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.cast.js.html.nu_validator" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.cast.js.nodejs" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.cast.js.rhino" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.cast.python" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.cast.racket" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.cast.racket.antlr" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.cast/cast" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.cast/smoke_main" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.cast/xlator_test" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.core" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.core.java11" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.dalvik" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.ide" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.ide.jdt" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.ide.jdt.test" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.ide.tests" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.ide_feature" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.scandroid" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.shrike" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.tests.ide_feature" />
+            <option value="$PROJECT_DIR$/com.ibm.wala.util" />
+            <option value="$PROJECT_DIR$/com.ibm.wala_feature" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
