@@ -514,6 +514,10 @@ public class Antlr2CAstTranslator<T extends Position> implements TranslatorToCAs
         if(n.expr().size() == 3 && myText.substring(0,3).equals("(if")) {
 
             // IF EXPRESSION CODE GOES IN HERE...
+            CAstNode if_stmt = visit(n.expr(0),context); // makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, visit(n.expr(0),context));
+            CAstNode then_stmt = makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, visit(n.expr(1),context));
+            CAstNode else_stmt = makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, visit(n.expr(2),context));
+            return makeNode(context, fFactory, n, CAstNode.IF_STMT, if_stmt, then_stmt, else_stmt);
 
         } else if(n.expr().size() == 2) {
             // binary expression...

@@ -19,7 +19,7 @@ import java.io.IOException;
 
 public class GenerateIR {
     public static void main(String[] args) throws IOException, WalaException {
-        String filename = System.getProperty("user.dir")+"/com.ibm.wala.cast.racket/src/test/resources/DemoPrograms/add.rkt";
+        String filename = System.getProperty("user.dir")+"/com.ibm.wala.cast.racket/src/test/resources/DemoPrograms/conditional.rkt";
         try {
             FileEntry modules = new FileEntry(filename);
             RacketCallGraphUtil.setTranslatorFactory(new CAstRacketTranslator(modules));
