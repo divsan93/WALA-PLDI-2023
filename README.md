@@ -26,3 +26,17 @@ CommonTokenStream tokens = new CommonTokenStream(lexer);
 BSLParser parser = new BSLParser(tokens);
 this.tree  = parser.program();
 ```
+## Module 3
+```java
+CAstNode declNode = makeNode(context,fFactory, n, CAstNode.DECL_STMT,
+fFactory.makeConstant(new CAstSymbolImpl(varName, varType, false)),
+fFactory.makeConstant(varValue));
+
+context.addNameDecl(declNode);
+return declNode;
+
+
+CAstNode binaryNode = makeNode(context, fFactory, CAstNode.BINARY_EXPR, myOperator, visit(n.expr(0), context), visit(n.expr(1), context), n);
+return binaryNode
+
+```

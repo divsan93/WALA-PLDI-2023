@@ -396,8 +396,12 @@ public class Antlr2CAstTranslator<T extends Position> implements TranslatorToCAs
             }
             // CODE FOR DECLARATION NODE GOES HERE ....
 
-//            context.addNameDecl(declNode);
-            return null;
+            CAstNode declNode = makeNode(context,fFactory, n, CAstNode.DECL_STMT,
+                    fFactory.makeConstant(new CAstSymbolImpl(varName, varType, false)),
+                    fFactory.makeConstant(varValue));
+
+            context.addNameDecl(declNode);
+            return declNode;
         } else {
             Boolean isLambda = false;
             if(n.getChildCount() > 4) {
@@ -533,8 +537,10 @@ public class Antlr2CAstTranslator<T extends Position> implements TranslatorToCAs
             }
 
             // CODE  FOR BINARY NODE GOES HERE...
+            CAstNode binaryNode = makeNode(context, fFactory, CAstNode.BINARY_EXPR, myOperator,
+                    visit(n.expr(0), context), visit(n.expr(1), context), n);
+            return binaryNode;
 
-            return null;
         } else if (n.expr().size() == 0) {
             CAstNode varNode = null;
             for (CAstNode c : context.getNameDecls()) {
