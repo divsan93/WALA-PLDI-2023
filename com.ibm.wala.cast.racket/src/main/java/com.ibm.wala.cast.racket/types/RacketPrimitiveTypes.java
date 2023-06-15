@@ -45,6 +45,8 @@ public static class RacketPrimitiveTypeMap implements CAstType.Primitive {
         primNameMap.put("i", new RacketPrimitiveTypeMap("int", TypeReference.Int.getName().toString()));
 
         //ADD OTHER PRIMITIVE TYPES...
+        primNameMap.put("b", new RacketPrimitiveTypeMap("bool", TypeReference.Boolean.getName().toString()));
+        primNameMap.put("c", new RacketPrimitiveTypeMap("char", TypeReference.Char.getName().toString()));
 
     }
 }
