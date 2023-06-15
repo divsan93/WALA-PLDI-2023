@@ -1,8 +1,10 @@
 package com.ibm.wala.cast.racket.translator;
-import com.ibm.wala.cast.ir.translator.TranslatorToCAst;
 import com.ibm.wala.cast.racket.Antlr.BSLLexer;
 import com.ibm.wala.cast.racket.Antlr.BSLParser;
+import com.ibm.wala.cast.racket.Antlr.BSLParser.*;
+import com.ibm.wala.cast.ir.translator.TranslatorToCAst;
 import com.ibm.wala.cast.racket.types.RacketPrimitiveTypes;
+import com.ibm.wala.cast.racket.types.RacketTypes;
 import com.ibm.wala.cast.tree.*;
 import com.ibm.wala.cast.tree.CAstSourcePositionMap.Position;
 import com.ibm.wala.cast.tree.impl.*;
@@ -26,6 +28,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.lang.Integer;
 
 /*
 In this class, we define the mechanism to translate the parse tree
@@ -58,7 +61,7 @@ public class Antlr2CAstTranslator<T extends Position> implements TranslatorToCAs
             fullPath=((SourceFileModule) m).getAbsolutePath();
         ANTLRFileStream input = new ANTLRFileStream(fullPath);
 
-        //PARSE TREE GENERATION CODE GOES IN HERE...
+        //PARSE TREE GENERATION CODE GOES HERE...
         BSLLexer lexer = new BSLLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         BSLParser parser = new BSLParser(tokens);
@@ -333,11 +336,10 @@ public class Antlr2CAstTranslator<T extends Position> implements TranslatorToCAs
     public CAstEntity visitProgram(ParseTree n, WalkContext context)
     {
         final ReportWalkContext child = new ReportWalkContext(new RootContext(), n);
-        // System.out.println(n.getChildCount());
         final List<CAstNode> stmts;
         stmts = new ArrayList<>(n.getChildCount()-1);
         for(int i=0; i < n.getChildCount()-1; i++) {
-            stmts.add(visitdefOrExpr((BSLParser.DefOrExprContext) n.getChild(i), child));
+            stmts.add(visitdefOrExpr((DefOrExprContext) n.getChild(i), child));
         }
         final CAstNode rast =
                 makeNode(
@@ -356,7 +358,7 @@ public class Antlr2CAstTranslator<T extends Position> implements TranslatorToCAs
         return new ReportEntity(n, subs, rast, map, pos, "dummy");
     }
 
-    public CAstNode visitdefOrExpr(BSLParser.DefOrExprContext n, WalkContext context)
+    public CAstNode visitdefOrExpr(DefOrExprContext n, WalkContext context)
     {
         CAstNode visitChild = visit(n.getChild(0), context);
         final CAstNode stmt = makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, visitChild);
@@ -369,14 +371,14 @@ public class Antlr2CAstTranslator<T extends Position> implements TranslatorToCAs
     private CAstNode visit(ParseTree n, WalkContext context) {
         if(n==null) {
             return makeNode(context, fFactory, null, CAstNode.EMPTY);
-        } else if (n instanceof BSLParser.DefinitionContext) {
-            return visit((BSLParser.DefinitionContext)n, context);
-        } else if (n instanceof BSLParser.ExprContext) {
-            return visit((BSLParser.ExprContext)n, context);
-        } else if (n instanceof BSLParser.TestCaseContext) {
-            return visit((BSLParser.TestCaseContext)n, context);
-        } else if (n instanceof BSLParser.LibraryRequireContext) {
-            return visit((BSLParser.LibraryRequireContext) n, context);
+        } else if (n instanceof DefinitionContext) {
+            return visit((DefinitionContext)n, context);
+        } else if (n instanceof ExprContext) {
+            return visit((ExprContext)n, context);
+        } else if (n instanceof TestCaseContext) {
+            return visit((TestCaseContext)n, context);
+        } else if (n instanceof LibraryRequireContext) {
+            return visit((LibraryRequireContext) n, context);
         }
 
         Assertions.UNREACHABLE("Unhandled node type " + n.getClass().getCanonicalName());
@@ -384,9 +386,112 @@ public class Antlr2CAstTranslator<T extends Position> implements TranslatorToCAs
         return null;
     }
 
-    private CAstNode visit(BSLParser.DefinitionContext n, WalkContext context) {return null;}
+    private CAstNode visit(DefinitionContext n, WalkContext context) {
+        String varName = n.name(0).getText();
+        Object varValue = n.expr().getChild(0).getText();
+        CAstType varType = getType(n);
+        if(n.expr().getChildCount() == 1) {
+            if(varType.getName().equals("I")) {
+                varValue = Integer.parseInt((String) varValue);
+            }
+            // CODE FOR DECLARATION NODE GOES HERE ....
 
-    public CAstType getType(BSLParser.DefinitionContext n)
+//            context.addNameDecl(declNode);
+            return null;
+        } else {
+            Boolean isLambda = false;
+            if(n.getChildCount() > 4) {
+                isLambda = n.getChild(4).getText().equals("lambda");
+            }
+            if(isLambda) {
+                final ReportWalkContext child = new ReportWalkContext(new RootContext(), n);
+                List<CAstNode> body = new ArrayList<>();
+                List<String> varNamesinFunc = new ArrayList<>();
+                Boolean reachEnd = false;
+                int iter = 6;
+                while(!reachEnd) {
+                    if(n.getChild(iter).getText().equals(")")) {
+                        reachEnd = true;
+                    } else if (n.getChild(iter).getText().equals(" ")) {
+                        continue;
+                    } else {
+                        varNamesinFunc.add(n.getChild(iter).getText());
+                    }
+                    iter++;
+                }
+                for(String myVarName : varNamesinFunc) {
+                    CAstNode declNode = makeNode(child, fFactory, n, CAstNode.DECL_STMT,
+                            fFactory.makeConstant(new CAstSymbolImpl(myVarName, RacketPrimitiveTypes.lookupType("i"), false)),
+                            fFactory.makeConstant(0));
+                    body.add(declNode);
+                    child.addNameDecl(declNode);
+                }
+                CAstNode visitChild = visit(n.expr(), child);
+                body.add(visitChild);
+                final CAstNode rast1 = makeNode(context, fFactory, null, CAstNode.LOCAL_SCOPE,
+                        makeNode(child, fFactory, n, CAstNode.BLOCK_STMT, body));
+                final CAstControlFlowMap map = child.cfg();
+                final CAstSourcePositionMap pos = child.pos();
+                final Map<CAstNode, Collection<CAstEntity>> subs =
+                        HashMapFactory.make(child.getScopedEntities());
+                CAstEntity fne = new ReportEntity(n, subs, rast1, map, pos, "dummy");
+                CAstNode fn = makeNode(context,fFactory, n, CAstNode.FUNCTION_EXPR, fFactory.makeConstant(fne));
+                context.addScopedEntity(fn, fne);
+                final List<CAstNode> stmts;
+                stmts = new ArrayList<>(2);
+                CAstNode declNode = makeNode(context,fFactory, n, CAstNode.DECL_STMT,
+                        fFactory.makeConstant(new CAstSymbolImpl(varName, varType, false, 0)));
+                context.addNameDecl(declNode);
+                stmts.add(declNode);
+                CAstNode varNode = null;
+                for(CAstNode c : context.getNameDecls()) {
+                    if (c.getKind() == CAstNode.DECL_STMT) {
+                        CAstSymbolImpl val = (CAstSymbolImpl) c.getChildren().get(0).getValue();
+                        if (val.name().equals(varName))
+                            varNode= makeNode(
+                                    context,
+                                    fFactory,
+                                    n,
+                                    CAstNode.VAR,
+                                    fFactory.makeConstant(varName),
+                                    fFactory.makeConstant(val.type()));
+                    }
+                }
+                stmts.add(makeNode(context, fFactory, n, CAstNode.ASSIGN,
+                        varNode, fn));
+                CAstNode fnBlkNode = makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, stmts);
+                System.out.println(rast1);
+                return fnBlkNode;
+            } else {
+                final List<CAstNode> stmts;
+                stmts = new ArrayList<>(2);
+                stmts.add(makeNode(context, fFactory, n, CAstNode.DECL_STMT,
+                        fFactory.makeConstant(new CAstSymbolImpl(varName, varType, false, 0))));
+                context.addNameDecl(stmts.get(0));
+                CAstNode varNode = null;
+                for(CAstNode c : context.getNameDecls()) {
+                    if (c.getKind() == CAstNode.DECL_STMT) {
+                        CAstSymbolImpl val = (CAstSymbolImpl) c.getChildren().get(0).getValue();
+                        if (val.name().equals(varName))
+                            varNode= makeNode(
+                                    context,
+                                    fFactory,
+                                    n,
+                                    CAstNode.VAR,
+                                    fFactory.makeConstant(varName),
+                                    fFactory.makeConstant(val.type()));
+                    }
+                }
+                stmts.add(makeNode(context, fFactory, n, CAstNode.ASSIGN,
+                        varNode,
+                        visit(n.expr(), context)));
+                CAstNode blkNode = makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, stmts);
+                return blkNode;
+            }
+        }
+    }
+
+    public CAstType getType(DefinitionContext n)
     {
         if(n.expr().BOOLEAN() != null)
             return RacketPrimitiveTypes.lookupType("b");
@@ -400,13 +505,61 @@ public class Antlr2CAstTranslator<T extends Position> implements TranslatorToCAs
         }
     }
 
-    private CAstNode visit(BSLParser.ExprContext n, WalkContext context) {return null;}
+    private CAstNode visit(ExprContext n, WalkContext context) {
+        String myText = n.getText();
+        if(n.expr().size() == 3 && myText.substring(0,3).equals("(if")) {
+            // if expression..
+            CAstNode if_stmt = visit(n.expr(0),context); // makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, visit(n.expr(0),context));
+            CAstNode then_stmt = makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, visit(n.expr(1),context));
+            CAstNode else_stmt = makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, visit(n.expr(2),context));
+            return makeNode(context, fFactory, n, CAstNode.IF_STMT, if_stmt, then_stmt, else_stmt);
+        } else if(n.expr().size() == 2) {
+            // binary expression...
+            String exprSymbol = n.name().getText();
+            CAstOperator myOperator = CAstOperator.OP_ADD;
+            switch (exprSymbol) {
+                case "-":
+                    myOperator = CAstOperator.OP_SUB;
+                    break;
+                case "*":
+                    myOperator = CAstOperator.OP_MUL;
+                    break;
+                case "/":
+                    myOperator = CAstOperator.OP_DIV;
+                    break;
+                case "=":
+                    myOperator = CAstOperator.OP_EQ;
+                    break;
+            }
 
-    private CAstNode visit(BSLParser.TestCaseContext n, WalkContext context) {
+            // CODE  FOR BINARY NODE GOES HERE...
+
+            return null;
+        } else if (n.expr().size() == 0) {
+            CAstNode varNode = null;
+            for (CAstNode c : context.getNameDecls()) {
+                if (c.getKind() == CAstNode.DECL_STMT) {
+                    CAstSymbolImpl val = (CAstSymbolImpl) c.getChildren().get(0).getValue();
+                    if (val.name().equals(n.name().getText()))
+                        varNode= makeNode(
+                                context,
+                                fFactory,
+                                n,
+                                CAstNode.VAR,
+                                fFactory.makeConstant(n.name().getText()),
+                                fFactory.makeConstant(val.type()));
+                }
+            }
+            return varNode;
+        }
         return null;
     }
 
-    private CAstNode visit(BSLParser.LibraryRequireContext n, WalkContext context) {
+    private CAstNode visit(TestCaseContext n, WalkContext context) {
+        return null;
+    }
+
+    private CAstNode visit(LibraryRequireContext n, WalkContext context) {
         return null;
     }
 
