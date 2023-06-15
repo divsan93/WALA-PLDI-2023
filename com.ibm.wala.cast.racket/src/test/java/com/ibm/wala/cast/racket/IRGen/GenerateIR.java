@@ -27,6 +27,17 @@ public class GenerateIR {
 
             //CODE FOR IR GOES IN HERE...
 
+            for(IClass c: cha) {
+                for (IMethod m : c.getDeclaredMethods()) {
+                    if (!m.isSynthetic()) {
+                        IRFactory<IMethod> f = AstIRFactory.makeDefaultFactory();
+                        IR ir = f.makeIR(m, Everywhere.EVERYWHERE, SSAOptions.defaultOptions());
+                        TypeInference t1 = TypeInference.make(ir, true);
+                        System.out.println(ir);
+                    }
+                }
+            }
+
         }
         catch (Exception e)
         {
