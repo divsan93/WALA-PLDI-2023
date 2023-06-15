@@ -1,5 +1,6 @@
 package com.ibm.wala.cast.racket.translator;
 import com.ibm.wala.cast.ir.translator.TranslatorToCAst;
+import com.ibm.wala.cast.racket.Antlr.BSLLexer;
 import com.ibm.wala.cast.racket.Antlr.BSLParser;
 import com.ibm.wala.cast.racket.types.RacketPrimitiveTypes;
 import com.ibm.wala.cast.tree.*;
@@ -15,6 +16,7 @@ import com.ibm.wala.util.collections.HashMapFactory;
 import com.ibm.wala.util.collections.Pair;
 import com.ibm.wala.util.debug.Assertions;
 import org.antlr.v4.runtime.ANTLRFileStream;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -57,8 +59,12 @@ public class Antlr2CAstTranslator<T extends Position> implements TranslatorToCAs
         ANTLRFileStream input = new ANTLRFileStream(fullPath);
 
         //PARSE TREE GENERATION CODE GOES IN HERE...
+        BSLLexer lexer = new BSLLexer(input);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        BSLParser parser = new BSLParser(tokens);
+        this.tree  = parser.program();
 
-        //System.out.println(tree.toStringTree(parser));
+        System.out.println(tree.toStringTree(parser));
     }
 
     public CAstEntity translateToCAst(String filename) {

@@ -20,3 +20,9 @@ this.tree  = parser.program();
 package com.ibm.wala.cast.racket.Antlr;
 ```
 ## Module 2
+```java
+BSLLexer lexer = new BSLLexer(input);
+CommonTokenStream tokens = new CommonTokenStream(lexer);
+BSLParser parser = new BSLParser(tokens);
+this.tree  = parser.program();
+```
