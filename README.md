@@ -40,3 +40,8 @@ CAstNode binaryNode = makeNode(context, fFactory, CAstNode.BINARY_EXPR, myOperat
 return binaryNode
 
 ```
+## Module 4
+```java
+primNameMap.put("b", new RacketPrimitiveTypeMap("bool", TypeReference.Boolean.getName().toString()));
+primNameMap.put("c", new RacketPrimitiveTypeMap("char", TypeReference.Char.getName().toString()));
+```
