@@ -28,7 +28,6 @@ public class GenerateIR {
         catch (Exception e)
         {
             System.out.println("Exception");
-            e.printStackTrace(System.err);
         }
 
     }
