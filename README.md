@@ -26,7 +26,7 @@ for(IClass c: cha) {
 **Antlr2CAstTranslator.java** - Code for creating CAstNode for conditional statements:
 
 ```java
-CAstNode if_stmt = visit(n.expr(0),context); // makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, visit(n.expr(0),context));
+CAstNode if_stmt = visit(n.expr(0),context); 
             CAstNode then_stmt = makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, visit(n.expr(1),context));
             CAstNode else_stmt = makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, visit(n.expr(2),context));
             return makeNode(context, fFactory, n, CAstNode.IF_STMT, if_stmt, then_stmt, else_stmt);
