@@ -17,7 +17,7 @@ return declNode;
 **Antlr2CAstTranslator.java** - Code for Binary Node:
 ```java
 CAstNode binaryNode = makeNode(context, fFactory, CAstNode.BINARY_EXPR, myOperator, visit(n.expr(0), context), visit(n.expr(1), context), n);
-return binaryNode
+return binaryNode;
 
 ```
 
