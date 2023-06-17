@@ -13,15 +13,16 @@ Racket Grammar - https://github.com/antlr/grammars-v4/tree/master/racket-bsl
 Racket Docs - https://docs.racket-lang.org/index.html
 
 #### Module 1 Solution:
-```
-java -jar antlr-4.11.1-complete.jar BSL.g4
-javac -cp ./antlr-4.11.1-complete.jar *.java
 
-```
-```
+Commands to generate Parser, Lexer and Visitor:
+
+```java
 java -jar antlr-4.11.1-complete.jar -Dlanguage=Java BSL.g4 -visitor
 javac -classpath antlr-4.11.1-complete.jar *.java
 ```
+
+Adding package name to newly generated files:
+
 ```java
 package com.ibm.wala.cast.racket.Antlr;
 ```
