@@ -23,6 +23,7 @@ public class GenerateIR {
         try {
             FileEntry modules = new FileEntry(filename);
             RacketCallGraphUtil.setTranslatorFactory(new CAstRacketTranslator(modules));
+            IClassHierarchy cha = RacketCallGraphUtil.makeHierarchyForScripts(filename);
         }
         catch (Exception e)
         {
