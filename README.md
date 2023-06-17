@@ -4,7 +4,7 @@
 
 #### Module 3 Solution:
 
-Code for Declare Node:
+**Antlr2CAstTranslator.java** - Code for Declare Node:
 ```java
 CAstNode declNode = makeNode(context,fFactory, n, CAstNode.DECL_STMT,
 fFactory.makeConstant(new CAstSymbolImpl(varName, varType, false)),
@@ -14,7 +14,7 @@ context.addNameDecl(declNode);
 return declNode;
 ```
 
-Code for Binary Node:
+**Antlr2CAstTranslator.java** - Code for Binary Node:
 ```java
 CAstNode binaryNode = makeNode(context, fFactory, CAstNode.BINARY_EXPR, myOperator, visit(n.expr(0), context), visit(n.expr(1), context), n);
 return binaryNode
@@ -25,7 +25,7 @@ return binaryNode
 
 #### Module 4 Solution:
 
-Primitive types in Racket:
+**RacketPrimitiveTypes.java** - Primitive types in Racket:
 
 ```java
 primNameMap.put("b", new RacketPrimitiveTypeMap("bool", TypeReference.Boolean.getName().toString()));
