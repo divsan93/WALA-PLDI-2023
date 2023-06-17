@@ -391,108 +391,19 @@ public class Antlr2CAstTranslator<T extends Position> implements TranslatorToCAs
         Object varValue = n.expr().getChild(0).getText();
         CAstType varType = getType(n);
         if(n.expr().getChildCount() == 1) {
-            if(varType.getName().equals("I")) {
+            if (varType.getName().equals("I")) {
                 varValue = Integer.parseInt((String) varValue);
             }
             // CODE FOR DECLARATION NODE GOES HERE ....
 
-            CAstNode declNode = makeNode(context,fFactory, n, CAstNode.DECL_STMT,
+            CAstNode declNode = makeNode(context, fFactory, n, CAstNode.DECL_STMT,
                     fFactory.makeConstant(new CAstSymbolImpl(varName, varType, false)),
                     fFactory.makeConstant(varValue));
 
             context.addNameDecl(declNode);
             return declNode;
-        } else {
-            Boolean isLambda = false;
-            if(n.getChildCount() > 4) {
-                isLambda = n.getChild(4).getText().equals("lambda");
-            }
-            if(isLambda) {
-                final ReportWalkContext child = new ReportWalkContext(new RootContext(), n);
-                List<CAstNode> body = new ArrayList<>();
-                List<String> varNamesinFunc = new ArrayList<>();
-                Boolean reachEnd = false;
-                int iter = 6;
-                while(!reachEnd) {
-                    if(n.getChild(iter).getText().equals(")")) {
-                        reachEnd = true;
-                    } else if (n.getChild(iter).getText().equals(" ")) {
-                        continue;
-                    } else {
-                        varNamesinFunc.add(n.getChild(iter).getText());
-                    }
-                    iter++;
-                }
-                for(String myVarName : varNamesinFunc) {
-                    CAstNode declNode = makeNode(child, fFactory, n, CAstNode.DECL_STMT,
-                            fFactory.makeConstant(new CAstSymbolImpl(myVarName, RacketPrimitiveTypes.lookupType("i"), false)),
-                            fFactory.makeConstant(0));
-                    body.add(declNode);
-                    child.addNameDecl(declNode);
-                }
-                CAstNode visitChild = visit(n.expr(), child);
-                body.add(visitChild);
-                final CAstNode rast1 = makeNode(context, fFactory, null, CAstNode.LOCAL_SCOPE,
-                        makeNode(child, fFactory, n, CAstNode.BLOCK_STMT, body));
-                final CAstControlFlowMap map = child.cfg();
-                final CAstSourcePositionMap pos = child.pos();
-                final Map<CAstNode, Collection<CAstEntity>> subs =
-                        HashMapFactory.make(child.getScopedEntities());
-                CAstEntity fne = new ReportEntity(n, subs, rast1, map, pos, "dummy");
-                CAstNode fn = makeNode(context,fFactory, n, CAstNode.FUNCTION_EXPR, fFactory.makeConstant(fne));
-                context.addScopedEntity(fn, fne);
-                final List<CAstNode> stmts;
-                stmts = new ArrayList<>(2);
-                CAstNode declNode = makeNode(context,fFactory, n, CAstNode.DECL_STMT,
-                        fFactory.makeConstant(new CAstSymbolImpl(varName, varType, false, 0)));
-                context.addNameDecl(declNode);
-                stmts.add(declNode);
-                CAstNode varNode = null;
-                for(CAstNode c : context.getNameDecls()) {
-                    if (c.getKind() == CAstNode.DECL_STMT) {
-                        CAstSymbolImpl val = (CAstSymbolImpl) c.getChildren().get(0).getValue();
-                        if (val.name().equals(varName))
-                            varNode= makeNode(
-                                    context,
-                                    fFactory,
-                                    n,
-                                    CAstNode.VAR,
-                                    fFactory.makeConstant(varName),
-                                    fFactory.makeConstant(val.type()));
-                    }
-                }
-                stmts.add(makeNode(context, fFactory, n, CAstNode.ASSIGN,
-                        varNode, fn));
-                CAstNode fnBlkNode = makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, stmts);
-                System.out.println(rast1);
-                return fnBlkNode;
-            } else {
-                final List<CAstNode> stmts;
-                stmts = new ArrayList<>(2);
-                stmts.add(makeNode(context, fFactory, n, CAstNode.DECL_STMT,
-                        fFactory.makeConstant(new CAstSymbolImpl(varName, varType, false, 0))));
-                context.addNameDecl(stmts.get(0));
-                CAstNode varNode = null;
-                for(CAstNode c : context.getNameDecls()) {
-                    if (c.getKind() == CAstNode.DECL_STMT) {
-                        CAstSymbolImpl val = (CAstSymbolImpl) c.getChildren().get(0).getValue();
-                        if (val.name().equals(varName))
-                            varNode= makeNode(
-                                    context,
-                                    fFactory,
-                                    n,
-                                    CAstNode.VAR,
-                                    fFactory.makeConstant(varName),
-                                    fFactory.makeConstant(val.type()));
-                    }
-                }
-                stmts.add(makeNode(context, fFactory, n, CAstNode.ASSIGN,
-                        varNode,
-                        visit(n.expr(), context)));
-                CAstNode blkNode = makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, stmts);
-                return blkNode;
-            }
         }
+        return null;
     }
 
     public CAstType getType(DefinitionContext n)
@@ -513,10 +424,8 @@ public class Antlr2CAstTranslator<T extends Position> implements TranslatorToCAs
         String myText = n.getText();
         if(n.expr().size() == 3 && myText.substring(0,3).equals("(if")) {
             // if expression..
-            CAstNode if_stmt = visit(n.expr(0),context); // makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, visit(n.expr(0),context));
-            CAstNode then_stmt = makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, visit(n.expr(1),context));
-            CAstNode else_stmt = makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, visit(n.expr(2),context));
-            return makeNode(context, fFactory, n, CAstNode.IF_STMT, if_stmt, then_stmt, else_stmt);
+
+            return null;
         } else if(n.expr().size() == 2) {
             // binary expression...
             String exprSymbol = n.name().getText();
