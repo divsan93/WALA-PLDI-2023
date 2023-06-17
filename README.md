@@ -4,7 +4,7 @@
 
 #### Module 4 Solution:
 
-Primitive types in Racket:
+**RacketPrimitiveTypes.java** - Primitive types in Racket:
 
 ```java
 primNameMap.put("b", new RacketPrimitiveTypeMap("bool", TypeReference.Boolean.getName().toString()));
@@ -15,7 +15,7 @@ primNameMap.put("c", new RacketPrimitiveTypeMap("char", TypeReference.Char.getNa
 
 #### Module 5 Solution:
 
-Code to generate IR:
+**GenerateIR.java** - Code to generate IR:
 
 ```java
 for(IClass c: cha) {
