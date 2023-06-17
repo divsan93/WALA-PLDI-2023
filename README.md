@@ -4,7 +4,7 @@
 
 #### Module 5 Solution:
 
-Code to generate IR:
+**GenerateIR.java** - Code to generate IR:
 
 ```java
 for(IClass c: cha) {
@@ -23,7 +23,7 @@ for(IClass c: cha) {
 
 #### Module 6 Solution:
 
-Code for creating CAstNode for conditional statements:
+**Antlr2CAstTranslator.java** - Code for creating CAstNode for conditional statements:
 
 ```java
 CAstNode if_stmt = visit(n.expr(0),context); // makeNode(context, fFactory, n, CAstNode.BLOCK_STMT, visit(n.expr(0),context));
